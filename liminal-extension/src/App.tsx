@@ -2,18 +2,24 @@ import { useEffect } from 'react';
 import reactLogo from './assets/react.svg';
 import liminalLogo from './assets/logo-full.svg';
 import useInjectScript from './hooks/useInjectScript';
+import { detectGemini } from './scripts/detectGemini';
+import { updateDOM } from './scripts/updateDOM';
 import './App.css';
 
 function App() {
+  const [geminiDetected, injectDetectGemini] = useInjectScript(detectGemini);
+  const [, injectUpdateDOM] = useInjectScript(updateDOM);
 
-  useEffect(()  => {
+  useEffect(() => {
+    injectDetectGemini();
+  }, [injectDetectGemini]);
 
-    if (chrome?.scripting) {
-      useInjectScript
-    } else {
-      console.error('chrome.scripting API not available');
+  useEffect(() => {
+    console.log('geminiDetected', geminiDetected);
+    if (geminiDetected) {
+      injectUpdateDOM();
     }
-  }, []);
+  }, [geminiDetected, injectUpdateDOM]);
 
   return (
     <>
